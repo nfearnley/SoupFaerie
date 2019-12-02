@@ -33,34 +33,46 @@ BODY {
 	CURSOR: hand; POSITION: relative
 }
 </STYLE>
-		<SCRIPT language="JavaScript1.2">
-<!--
+		<SCRIPT>
+    <!--
 
-var dragapproved=false
-var z,x,y
-function move(){
-if (event.button==1&&dragapproved){
-z.style.pixelLeft=temp1+event.clientX-x
-z.style.pixelTop=temp2+event.clientY-y
-return false
-}
-}
-function drags(){
-if (!document.all)
-return
-if (event.srcElement.className=="drag"){
-dragapproved=true
-z=event.srcElement
-temp1=z.style.pixelLeft
-temp2=z.style.pixelTop
-x=event.clientX
-y=event.clientY
-document.onmousemove=move
-}
-}
-document.onmousedown=drags
-document.onmouseup=new Function("dragapproved=false")
-//-->
+    var dragapproved = false;
+    var elem;
+    var origx;
+    var origy;
+    var clickx;
+    var clicky;    
+    
+    function move(e) {
+      if (e.buttons & 1 && dragapproved) {
+        var relx = e.clientX - clickx;
+        var rely = e.clientY - clicky;
+        console.log(relx + ", " + rely)
+        elem.style.left = origx + relx + "px";
+        elem.style.top = origy + rely + "px";
+        return false;
+      }
+    }
+    
+    document.onmousedown = function drags(e) {
+      if (document.readyState !== "complete") {
+        return;
+      }
+      if (e.srcElement.className === "drag") {
+        dragapproved = true;
+        elem = e.srcElement;
+        clickx = e.clientX;
+        clicky = e.clientY;
+        origx = parseInt(elem.style.left, 10) || 0;
+        origy = parseInt(elem.style.top, 10) || 0
+        document.onmousemove = move;
+      }
+    }
+    
+    document.onmouseup = function(e) {
+      dragapproved = false;
+    };
+    //-->
 		</SCRIPT>
 	</HEAD>
 	<BODY bgColor="#ffffff" bottomMargin="0" class="smallest" leftMargin="0" rightMargin="0" topMargin="0" MARGINHEIGHT="0" MARGINWIDTH="0">
